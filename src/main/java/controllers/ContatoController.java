@@ -8,15 +8,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.MailException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import model.Contato;
+import model.Marcacao;
+import model.Mensagem;
+import services.MailService;
 
 @RestController
 @RequestMapping("/contato")
@@ -26,28 +27,39 @@ public class ContatoController {
 	Logger logger = Logger.getLogger(ContatoController.class.getSimpleName());
 	
 	@Autowired
-	private JavaMailSender javaMailSender;
+	MailService mailSrvc;
 	
-	@RequestMapping(method = RequestMethod.GET)
-	public String get()
-	{
-		return "Teste";
-	}
+	private final String from = "site@jrodontologia.com";
+	private final String to = "site@jrodontologia.com";
 	
-	@RequestMapping(value="/add/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<?> enviaContato(@RequestBody Contato contato) throws UnsupportedEncodingException{
+	@RequestMapping(value="/mensagem/add/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<?> enviaContato(@RequestBody Mensagem contato) throws UnsupportedEncodingException{
 		
 		logger.log(Level.INFO, "Novo contato: " + contato.toString());
 		
-		SimpleMailMessage mail = new SimpleMailMessage();
+		try 
+		{
+			mailSrvc.enviaEmail(from, to, contato.getAssunto(), contato.toString());
+			return new ResponseEntity<Mensagem>(contato, HttpStatus.CREATED);
+			
+		} catch (MailException e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@RequestMapping(value="/marcacao/add/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<?> marca(@RequestBody Marcacao marcacao)
+	{
+		logger.log(Level.INFO, "Marcação: " + marcacao.toString());
 		
-		mail.setFrom("site@jrodontologia.com");
-		mail.setTo("site@jrodontologia.com");
-		mail.setSubject("Mensagem do site, assunto: " + contato.getAssunto());
-		mail.setText(contato.toString());
-		
-		javaMailSender.send(mail);
-		
-		return new ResponseEntity<Contato>(contato, HttpStatus.CREATED);
+		try 
+		{
+			mailSrvc.enviaEmail(from, to, marcacao.getAssunto(), marcacao.toString());
+			return new ResponseEntity<Marcacao>(marcacao, HttpStatus.CREATED);
+			
+		} catch (MailException e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	
 	}
 }

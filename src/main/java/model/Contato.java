@@ -3,18 +3,25 @@ package model;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class Contato {
+public abstract class Contato {
 
 	private String nome;
 	private String email;
-	private String assunto;
-	private String mensagem;
+	private String telefone;
 	
 	private LocalDateTime horario;
 	
-	public Contato() 
-	{
+	public Contato() {
 		this.horario = LocalDateTime.now();
+	}
+	
+	public abstract String getAssunto();
+
+	public LocalDateTime getHorario() {
+		return horario;
+	}
+	public void setHorario(LocalDateTime horario) {
+		this.horario = horario;
 	}
 	
 	public String getNome() {
@@ -31,33 +38,20 @@ public class Contato {
 		this.email = email;
 	}
 	
-	public String getAssunto() {
-		return assunto;
+	public String getTelefone() {
+		return telefone;
 	}
-	public void setAssunto(String assunto) {
-		this.assunto = assunto;
+	public void setTelefone(String telefone) {
+		this.telefone = telefone;
 	}
 	
-	public String getMensagem() {
-		return mensagem;
-	}
-	public void setMensagem(String mensagem) {
-		this.mensagem = mensagem;
-	}
-
-	public LocalDateTime getHorario() {
-		return horario;
-	}
-	public void setHorario(LocalDateTime horario) {
-		this.horario = horario;
-	}
-
 	@Override
 	public String toString() {
-		return "Nome: " + nome + "\n"
-				+ "Email: " + email + "\n"
-				+ "Assunto: " + assunto + "\n"
-				+ "Mensagem: " + mensagem + "\n"
-				+ "Horário: " + this.getHorario().format(DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm:ss"));
+		return	"Nome: " + this.getNome() + "\n"
+				+ "Email: " + this.getEmail() + "\n"
+				+ "Assunto: " + this.getAssunto() + "\n"
+				+ "Telefone: " + this.getTelefone() + "\n"
+				+ "Horário de contato: " + this.getHorario().format(DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm:ss"));
 	}
+	
 }

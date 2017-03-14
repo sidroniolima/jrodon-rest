@@ -1,3 +1,6 @@
 /home/sidronio/jrodon-rest/src/main/java/model/Contato.java
+/home/sidronio/jrodon-rest/src/main/java/services/MailService.java
 /home/sidronio/jrodon-rest/src/main/java/application/Application.java
+/home/sidronio/jrodon-rest/src/main/java/model/Mensagem.java
+/home/sidronio/jrodon-rest/src/main/java/model/Marcacao.java
 /home/sidronio/jrodon-rest/src/main/java/controllers/ContatoController.java

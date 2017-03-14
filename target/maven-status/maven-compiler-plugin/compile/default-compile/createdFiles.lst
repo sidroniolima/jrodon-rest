@@ -1,3 +1,6 @@
-controllers/ContatoController.class
+model/Mensagem.class
 application/Application.class
+controllers/ContatoController.class
+model/Marcacao.class
 model/Contato.class
+services/MailService.class
