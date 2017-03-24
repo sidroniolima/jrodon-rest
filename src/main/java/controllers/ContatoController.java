@@ -15,8 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import model.Marcacao;
-import model.Mensagem;
+import model.Contato;
 import services.MailService;
 
 @RestController
@@ -29,37 +28,19 @@ public class ContatoController {
 	@Autowired
 	MailService mailSrvc;
 	
-	private final String from = "site@jrodontologia.com";
-	private final String to = "site@jrodontologia.com";
-	
-	@RequestMapping(value="/mensagem/add/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<?> enviaContato(@RequestBody Mensagem contato) throws UnsupportedEncodingException{
+	@RequestMapping(value="/mensagem/envia/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<?> enviaContato(@RequestBody Contato contato) throws UnsupportedEncodingException{
 		
 		logger.log(Level.INFO, "Novo contato: " + contato.toString());
 		
 		try 
 		{
-			mailSrvc.enviaEmail(from, to, contato.getAssunto(), contato.toString());
-			return new ResponseEntity<Mensagem>(contato, HttpStatus.CREATED);
+			mailSrvc.enviaEmail(contato.getFrom(), contato.getTo(), contato.getAssunto(), contato.toString());
+			return new ResponseEntity<Contato>(contato, HttpStatus.CREATED);
 			
 		} catch (MailException e) {
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 	}
 	
-	@RequestMapping(value="/marcacao/add/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<?> marca(@RequestBody Marcacao marcacao)
-	{
-		logger.log(Level.INFO, "Marcação: " + marcacao.toString());
-		
-		try 
-		{
-			mailSrvc.enviaEmail(from, to, marcacao.getAssunto(), marcacao.toString());
-			return new ResponseEntity<Marcacao>(marcacao, HttpStatus.CREATED);
-			
-		} catch (MailException e) {
-			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
-		}
-	
-	}
 }
