@@ -31,14 +31,15 @@ public class ContatoController {
 	@RequestMapping(value="/mensagem/envia/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<?> enviaContato(@RequestBody Contato contato) throws UnsupportedEncodingException{
 		
-		logger.log(Level.INFO, "Novo contato: " + contato.toString());
-		
 		try 
 		{
 			mailSrvc.enviaEmail(contato.getFrom(), contato.getTo(), contato.getAssunto(), contato.toString());
+			logger.log(Level.INFO, "Novo contato: " + contato.toString());
+			
 			return new ResponseEntity<Contato>(contato, HttpStatus.CREATED);
 			
 		} catch (MailException e) {
+			logger.severe(e.getMessage());
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 	}
